@@ -15,13 +15,18 @@ from class_names import class_names as CLASS_NAMES
 parser = argparse.ArgumentParser()
 parser.add_argument(
     '-w', '--weights',
-    default='../outputs/efficientnet/best_model.pth',
+    default='../outputs/efficientnet_80_20/best_model.pth',
+    help='path to the model weights',
+)
+parser.add_argument(
+    '-i', '--image',
+    default='../input/inference_data/apple_scab.jpg',
     help='path to the model weights',
 )
 args = vars(parser.parse_args())
 
 # Constants and other configurations.
-DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 IMAGE_RESIZE = 224
 
 
@@ -112,33 +117,44 @@ if __name__ == '__main__':
     weights_path = pathlib.Path(args['weights'])
     model_name = str(weights_path).split(os.path.sep)[-2]
     print(model_name)
-    infer_result_path = os.path.join(
-        '..', 'outputs', 'inference_results', model_name
-    )
+    infer_result_path = os.path.join('..', 'outputs', 'inference_results', model_name)
     os.makedirs(infer_result_path, exist_ok=True)
-
+    img_path = args['image']
     checkpoint = torch.load(weights_path)
     # Load the model.
     model = build_model(fine_tune=False, num_classes=len(CLASS_NAMES)).to(DEVICE)
     model.load_state_dict(checkpoint['model_state_dict'])
 
-    all_image_paths = glob.glob(os.path.join('..', 'input', 'inference_data', '*'))
-
+    # all_image_paths = glob.glob(os.path.join('..', 'input', 'inference_data', '*'))
+    #
     transform = get_test_transform(IMAGE_RESIZE)
+    #
+    # for i, image_path in enumerate(all_image_paths):
+    #     print(f"Inference on image: {i + 1}")
+    #     image = cv2.imread(image_path)
+    #     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    #     image = transform(image)
+    #     image = torch.unsqueeze(image, 0)
+    #     result = inference(
+    #         model,
+    #         image,
+    #         DEVICE
+    #     )
+    #     # Save the image to disk.
+    #     image_name = image_path.split(os.path.sep)[-1]
+    #     cv2.imshow('Image', result)
+    #     cv2.waitKey(1)
+    #     cv2.imwrite(os.path.join(infer_result_path, image_name), result * 255.)
 
-    for i, image_path in enumerate(all_image_paths):
-        print(f"Inference on image: {i + 1}")
-        image = cv2.imread(image_path)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = transform(image)
-        image = torch.unsqueeze(image, 0)
-        result = inference(
-            model,
-            image,
-            DEVICE
-        )
-        # Save the image to disk.
-        image_name = image_path.split(os.path.sep)[-1]
-        cv2.imshow('Image', result)
-        cv2.waitKey(1)
-        cv2.imwrite(os.path.join(infer_result_path, image_name), result * 255.)
+    # For inferencing a single image
+    print(f"Inference on image located at: {img_path}")
+    image = cv2.imread(img_path)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image = transform(image)
+    image = torch.unsqueeze(image, 0)
+    result = inference(model, image, DEVICE)
+    # Save the image to disk.
+    image_name = img_path.split(os.path.sep)[-1]
+    cv2.imshow('Image', result)
+    cv2.waitKey(1)
+    cv2.imwrite(os.path.join(infer_result_path, image_name), result * 255.)

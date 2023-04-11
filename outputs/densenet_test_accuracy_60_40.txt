@@ -1,0 +1,2 @@
+Training loss: 0.053, training acc: 98.372
+Validation loss: 0.037, validation acc: 98.875

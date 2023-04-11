@@ -17,7 +17,7 @@ DEST_DIR = os.path.join('..', 'input', 'test')
 # Class directories.
 class_dirs = CLASS_NAMES
 # Test images.
-test_split = 0.8
+test_split = 0.2
 
 for class_dir in class_dirs:
     os.makedirs(os.path.join(DEST_DIR, class_dir), exist_ok=True)

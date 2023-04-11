@@ -1,0 +1,1 @@
+efficientnet Test Accuracy: 98.313%

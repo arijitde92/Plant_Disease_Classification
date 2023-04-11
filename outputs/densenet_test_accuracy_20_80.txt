@@ -1,0 +1,1 @@
+densenet Test Accuracy: 96.011%
