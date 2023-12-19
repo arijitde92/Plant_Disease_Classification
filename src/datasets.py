@@ -14,6 +14,7 @@ VALID_SPLIT = 0.15  # Ratio of data for validation
 
 # Training transforms
 def get_train_transform(image_size):
+    """Defines transformations for training data."""
     train_transform = transforms.Compose([
         transforms.Resize((image_size, image_size)),
         transforms.RandomHorizontalFlip(p=0.5),
@@ -36,6 +37,7 @@ def get_train_transform(image_size):
 
 # Validation transforms
 def get_valid_transform(image_size):
+    """Defines transformations for validation/testing data."""
     valid_transform = transforms.Compose([
         transforms.Resize((image_size, image_size)),
         transforms.ToTensor(),
@@ -50,7 +52,7 @@ def get_valid_transform(image_size):
 def get_datasets():
     """
     Function to prepare the Datasets.
-    Returns the training and validation datasets along 
+    Returns the training and validation datasets along
     with the class names.
     """
     dataset = datasets.ImageFolder(

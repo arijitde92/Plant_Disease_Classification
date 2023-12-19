@@ -42,7 +42,7 @@ def get_test_transform(image_size):
     ])
     return test_transform
 
-
+# Function to prepare the test dataset
 def get_datasets(image_size):
     """
     Function to prepare the Datasets.
